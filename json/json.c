@@ -189,7 +189,7 @@ static int parseFalse(const char **source, struct JsonVal *value)
 static int parseNum(const char **source, struct JsonVal *value)
 {
     value->type = jsonNumberT;
-    value->u.number = strtold(*source, source);
+    value->u.number = strtold(*source, (char**)source);
 
     return 0;
 }
