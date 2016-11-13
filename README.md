@@ -1,5 +1,5 @@
 # json
-Pure C json serialization library. For the complete API refer to the json.h. Here are a couple of basic exapmles.
+Pure C json serialization library. For the complete API refer to the json.h. Here is a couple of basic exapmles.
 ## Parsing
 ```
 const int kErrorBufSize = 1024;
