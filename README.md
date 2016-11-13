@@ -15,6 +15,7 @@ val = jsonParseString(rawSource, errBuf, kErrorBufSize);
 
 if (*errBuf != 0) // Parsing failed
 {
+    fprintf(stderr, "%s\n", errBuf);
     JsonVal_destroy(&val);
     return;
 }
