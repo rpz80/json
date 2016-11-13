@@ -341,7 +341,7 @@ static int forEachFile(
     return 0;
 }
 
-static int forEachString(
+static void forEachString(
         const char **source,
         int *mustFailArray,
         int sourceLen,
