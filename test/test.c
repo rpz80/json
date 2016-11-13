@@ -9,7 +9,7 @@
 
 #define ASSERT_TRUE(expr) \
     do { \
-        //assert((expr)); \
+        assert((expr)); \
         if (!(expr)) {\
             exit(-1); \
             fprintf(stderr, "%s:%d:%s. ASSERT_TRUE '%s' failed\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, #expr); \
