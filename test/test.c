@@ -7,6 +7,15 @@
 #include <sys/stat.h>
 #include <json/json.h>
 
+#define ASSERT_TRUE(expr) \
+    do { \
+        //assert((expr)); \
+        if (!(expr)) {\
+            exit(-1); \
+            fprintf(stderr, "%s:%d:%s. ASSERT_TRUE '%s' failed\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, #expr); \
+        } \
+    } while (0)
+
 static const int kErrorBufSize = 1024;
 
 static char *readFileToString(const char *path)
@@ -97,7 +106,7 @@ static void testVsFile(const char *path)
     char *rawContent;
 
     rawContent = readFileToString(path);
-    assert(rawContent);
+    ASSERT_TRUE(rawContent);
 
     testVsString(rawContent, 0);
     free(rawContent);
@@ -112,7 +121,7 @@ static void testVsString(const char *rawSource, int mustFail)
     char errBuf[kErrorBufSize];
 
     val = jsonParseString(rawSource, errBuf, kErrorBufSize);
-    assert(mustFail ? *errBuf : !*errBuf);
+    ASSERT_TRUE(mustFail ? *errBuf : !*errBuf);
 
     if (*errBuf != 0)
     {
@@ -125,7 +134,7 @@ static void testVsString(const char *rawSource, int mustFail)
     JsonVal_writeString(&val, serializedContent, len);
 
     retCode = cmpSkipSpaces(rawSource, serializedContent);
-    assert(mustFail ? (retCode != 0) : (retCode == 0));
+    ASSERT_TRUE(mustFail ? (retCode != 0) : (retCode == 0));
 
     free(serializedContent);
     JsonVal_destroy(&val);
@@ -330,7 +339,7 @@ static int forEachFile(
         if (matchMask(mask, entry->d_name) == 0)
         {
             fullPath = pathJoin(path, entry->d_name);
-            assert(fullPath);
+            ASSERT_TRUE(fullPath);
             if (!fullPath)
                 continue;
             action(fullPath);
@@ -355,13 +364,13 @@ static void forEachString(
 
 static void testMatchFunc()
 {
-    assert(matchMask("*", "abc.df") == 0);
-    assert(matchMask("*.d?", "c.df") == 0);
-    assert(matchMask("a*c.?f", "abc.df") == 0);
-    assert(matchMask("a*", "abc.df") == 0);
-    assert(matchMask("[kdar]b?.d*", "abc.df") == 0);
-    assert(matchMask("b?.d*", "abc.df") != 0);
-    assert(matchMask("[kdarb?.d*", "abc.df") != 0);
+    ASSERT_TRUE(matchMask("*", "abc.df") == 0);
+    ASSERT_TRUE(matchMask("*.d?", "c.df") == 0);
+    ASSERT_TRUE(matchMask("a*c.?f", "abc.df") == 0);
+    ASSERT_TRUE(matchMask("a*", "abc.df") == 0);
+    ASSERT_TRUE(matchMask("[kdar]b?.d*", "abc.df") == 0);
+    ASSERT_TRUE(matchMask("b?.d*", "abc.df") != 0);
+    ASSERT_TRUE(matchMask("[kdarb?.d*", "abc.df") != 0);
 }
 
 static void testAccessors()
@@ -371,13 +380,13 @@ static void testAccessors()
     struct JsonVal *inner;
 
     val = jsonParseString("{\"myObj\": {\"myKey1\": 123.98, \"myKey2\": false}}", errorBuf, kErrorBufSize);
-    assert(!*errorBuf);
+    ASSERT_TRUE(!*errorBuf);
     inner = JsonVal_getObjectValueByKey(&val, "myObj");
-    assert(inner);
-    assert(inner->type = jsonObjectT);
+    ASSERT_TRUE(inner);
+    ASSERT_TRUE(inner->type = jsonObjectT);
     inner = JsonVal_getObjectValueByKey(inner, "myKey1");
-    assert(inner->type == jsonNumberT);
-    assert(inner->u.number - 123.98 < 0.00001 && -(inner->u.number - 123.98) < 0.00001);
+    ASSERT_TRUE(inner->type == jsonNumberT);
+    ASSERT_TRUE(inner->u.number - 123.98 < 0.00001 && -(inner->u.number - 123.98) < 0.00001);
 
     JsonVal_destroy(&val);
 }
@@ -404,7 +413,7 @@ static void testBuildObjectFunctions()
 
     JsonVal_writeString(&top, out, 1024);
 
-    assert(strcmp(out, "{\"key1\":\"string1\",\"key2\":{\"subKey1\":[42,true,false,{\"nullKey\":null}]}}") == 0);
+    ASSERT_TRUE(strcmp(out, "{\"key1\":\"string1\",\"key2\":{\"subKey1\":[42,true,false,{\"nullKey\":null}]}}") == 0);
 
     JsonVal_destroy(&top);
 }
