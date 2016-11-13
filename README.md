@@ -1,7 +1,7 @@
 # json
 Pure C json serialization library. For the complete API refer to the json.h. Here is a couple of basic exapmles.
 ## Parsing
-```
+``` C
 const int kErrorBufSize = 1024;
 int retCode;
 int len;
@@ -31,7 +31,7 @@ JsonVal_destroy(&val);
 
 ```
 ## Building && writing
-```
+``` C
 static writeToSocket(void *ctx, void *buf, int len)
 {
     struct Socket *socket = (struct Socket *)ctx;
