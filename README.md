@@ -1,3 +1,4 @@
+https://travis-ci.org/rpz80/json.svg?branch=master
 # json
 Pure C json serialization library. For the complete API refer to the json.h. Here is a couple of basic exapmles.
 ## Parsing
