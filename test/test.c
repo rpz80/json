@@ -377,16 +377,35 @@ static void testAccessors()
 {
     char errorBuf[kErrorBufSize];
     struct JsonVal val;
-    struct JsonVal *inner;
+    struct JsonVal *inner, *arrayInner;
 
-    val = jsonParseString("{\"myObj\": {\"myKey1\": 123.98, \"myKey2\": false}}", errorBuf, kErrorBufSize);
+    val = jsonParseString("{\"myObj\": {\"myKey1\": 123.98, \"myKey2\": false, \"myKey3\": [\"stringVal\", 42] }}", 
+        errorBuf, kErrorBufSize);
     ASSERT_TRUE(!*errorBuf);
+
     inner = JsonVal_getObjectValueByKey(&val, "myObj");
     ASSERT_TRUE(inner);
     ASSERT_TRUE(inner->type = jsonObjectT);
+
     inner = JsonVal_getObjectValueByKey(inner, "myKey1");
     ASSERT_TRUE(inner->type == jsonNumberT);
     ASSERT_TRUE(inner->u.number - 123.98 < 0.00001 && -(inner->u.number - 123.98) < 0.00001);
+
+    /* test array accessors */
+    inner = JsonVal_getObjectValueByKey(&val, "myObj");
+    ASSERT_TRUE(inner);
+
+    inner = JsonVal_getObjectValueByKey(inner, "myKey3");
+    ASSERT_TRUE(JsonVal_isArray(inner));
+    ASSERT_TRUE(JsonVal_arrayLen(inner) == 2);
+
+    arrayInner = JsonVal_arrayAt(inner, 0);
+    ASSERT_TRUE(JsonVal_isString(arrayInner));
+    ASSERT_TRUE(strcmp(arrayInner->u.string, "stringVal") == 0);
+
+    arrayInner = JsonVal_arrayAt(inner, 1);
+    ASSERT_TRUE(JsonVal_isNumber(arrayInner));
+    ASSERT_TRUE(arrayInner->u.number - 42 < 0.00001);
 
     JsonVal_destroy(&val);
 }

@@ -337,6 +337,24 @@ int JsonVal_isNull(const struct JsonVal *val)
     return val->type == jsonNullT;
 }
 
+int JsonVal_arrayLen(struct JsonVal *val)
+{
+    assert(val->type == jsonArrayT);
+    if (val->type != jsonArrayT)
+        return -1;
+
+    return val->u.array.len;
+}
+
+struct JsonVal *JsonVal_arrayAt(struct JsonVal *val, int index)
+{
+    assert(val->type == jsonArrayT);
+    if (val->type != jsonArrayT || index >= val->u.array.len)
+        return NULL;
+
+    return &val->u.array.values[index];
+}
+
 struct JsonVal *JsonVal_getObjectValueByKey(const struct JsonVal *val, const char *key)
 {
     int i;
